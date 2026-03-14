@@ -1,41 +1,39 @@
 import React from 'react';
 
+type Variant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
+type Size = 'sm' | 'md' | 'lg';
+
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
-  size?: 'sm' | 'md' | 'lg';
+  variant?: Variant;
+  size?: Size;
   isLoading?: boolean;
-  children: React.ReactNode;
 }
 
+const variantStyles: Record<Variant, string> = {
+  primary: 'bg-[var(--accent)] text-white hover:opacity-90',
+  secondary: 'bg-[var(--highlight)] text-slate-900 hover:opacity-90',
+  outline: 'border border-[var(--line)] bg-white/70 text-slate-800 hover:bg-white',
+  ghost: 'bg-transparent text-slate-700 hover:bg-white/60',
+  danger: 'bg-rose-600 text-white hover:bg-rose-700',
+};
+
+const sizeStyles: Record<Size, string> = {
+  sm: 'px-3 py-2 text-xs',
+  md: 'px-4 py-3 text-sm',
+  lg: 'px-5 py-3.5 text-sm',
+};
+
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ variant = 'primary', size = 'md', isLoading, className = '', children, ...props }, ref) => {
-    const baseStyles = 'btn-base font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed';
-    
-    const variantStyles = {
-      primary: 'bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800',
-      secondary: 'bg-gray-200 text-gray-900 hover:bg-gray-300 active:bg-gray-400',
-      outline: 'border-2 border-gray-300 text-gray-900 hover:bg-gray-50 active:bg-gray-100',
-      ghost: 'text-gray-700 hover:bg-gray-100 active:bg-gray-200',
-      danger: 'bg-red-600 text-white hover:bg-red-700 active:bg-red-800',
-    };
-
-    const sizeStyles = {
-      sm: 'px-2 py-1 text-xs',
-      md: 'px-4 py-2 text-sm',
-      lg: 'px-6 py-3 text-base',
-    };
-
-    return (
-      <button
-        ref={ref}
-        className={`${baseStyles} ${variantStyles[variant]} ${sizeStyles[size]} ${className}`}
-        disabled={isLoading || props.disabled}
-        {...props}
-      >
-        {isLoading ? '...' : children}
-      </button>
-    );
-  }
+  ({ variant = 'primary', size = 'md', className = '', isLoading, children, ...props }, ref) => (
+    <button
+      ref={ref}
+      className={`btn-base ${variantStyles[variant]} ${sizeStyles[size]} disabled:cursor-not-allowed disabled:opacity-60 ${className}`}
+      disabled={isLoading || props.disabled}
+      {...props}
+    >
+      {isLoading ? 'Saving...' : children}
+    </button>
+  ),
 );
 
 Button.displayName = 'Button';

@@ -1,0 +1,98 @@
+import { useRef } from 'react';
+import { Button } from '@/components/common/Button';
+import { Card } from '@/components/common/Card';
+import type { ExportPayload } from '@/types';
+import { clearAllData, exportAllData, importAllData } from '@/db/repository';
+import { useSettings } from '@/hooks/useSettings';
+
+export default function SettingsPage() {
+  const { settings, save } = useSettings();
+  const fileRef = useRef<HTMLInputElement | null>(null);
+
+  const downloadBackup = async () => {
+    const payload = await exportAllData();
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = `mat-log-backup-${new Date().toISOString().slice(0, 10)}.json`;
+    anchor.click();
+    URL.revokeObjectURL(url);
+  };
+
+  return (
+    <div className="space-y-4">
+      <div>
+        <h1 className="text-3xl font-bold">Settings</h1>
+        <p className="mt-1 text-sm text-[var(--muted)]">Local preferences and backup controls.</p>
+      </div>
+      <Card className="grid gap-3">
+        <input className="input-base" value={settings.displayName} onChange={(e) => save({ displayName: e.target.value })} placeholder="Display name" />
+        <select className="input-base" value={settings.beltLevel} onChange={(e) => save({ beltLevel: e.target.value as typeof settings.beltLevel })}>
+          <option value="white">White belt</option>
+          <option value="blue">Blue belt</option>
+          <option value="purple">Purple belt</option>
+          <option value="brown">Brown belt</option>
+          <option value="black">Black belt</option>
+        </select>
+        <input
+          className="input-base"
+          type="number"
+          value={settings.weeklyGoal}
+          onChange={(e) => save({ weeklyGoal: Number(e.target.value) || 0 })}
+          placeholder="Weekly goal"
+        />
+        <input
+          className="input-base"
+          type="number"
+          value={settings.annualTarget ?? ''}
+          onChange={(e) => save({ annualTarget: Number(e.target.value) || undefined })}
+          placeholder="Annual target"
+        />
+        <input
+          className="input-base"
+          type="number"
+          value={settings.preferredRoundLength}
+          onChange={(e) => save({ preferredRoundLength: Number(e.target.value) || 5 })}
+          placeholder="Preferred round length"
+        />
+      </Card>
+      <Card className="space-y-3">
+        <div className="text-sm font-semibold">Backup</div>
+        <div className="flex flex-wrap gap-2">
+          <Button variant="outline" onClick={downloadBackup}>
+            Export JSON
+          </Button>
+          <Button variant="outline" onClick={() => fileRef.current?.click()}>
+            Import JSON
+          </Button>
+          <Button
+            variant="danger"
+            onClick={async () => {
+              if (window.confirm('Clear all local data?')) {
+                await clearAllData();
+                window.location.reload();
+              }
+            }}
+          >
+            Clear local data
+          </Button>
+        </div>
+        <input
+          ref={fileRef}
+          type="file"
+          accept="application/json"
+          className="hidden"
+          onChange={async (event) => {
+            const file = event.target.files?.[0];
+            if (!file) return;
+            const text = await file.text();
+            const payload = JSON.parse(text) as ExportPayload;
+            await importAllData(payload);
+            window.location.reload();
+          }}
+        />
+      </Card>
+    </div>
+  );
+}

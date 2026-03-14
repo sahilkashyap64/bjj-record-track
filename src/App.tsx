@@ -1,44 +1,40 @@
-import React, { useEffect } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { seedDatabase } from './db/seedData';
+import { useEffect } from 'react';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { seedDatabase } from '@/db/seedData';
+import { AppShell } from '@/components/layout/AppShell';
+import HomePage from '@/pages/Home';
+import LogsPage from '@/pages/Logs';
+import NewLogPage from '@/pages/NewLog';
+import LogDetailPage from '@/pages/LogDetail';
+import StatsPage from '@/pages/Stats';
+import FocusPage from '@/pages/Focus';
+import FocusNewPage from '@/pages/FocusNew';
+import NotesPage from '@/pages/Notes';
+import NoteNewPage from '@/pages/NoteNew';
+import SettingsPage from '@/pages/Settings';
 
-// Pages
-import Home from './pages/Home';
-import Logs from './pages/Logs';
-import NewLog from './pages/NewLog';
-import LogDetail from './pages/LogDetail';
-import Stats from './pages/Stats';
-import Focus from './pages/Focus';
-import Notes from './pages/Notes';
-import Settings from './pages/Settings';
-
-function App() {
+export default function App() {
   useEffect(() => {
-    // Initialize database with seed data on first run
     seedDatabase().catch(console.error);
-
-    // Register service worker for PWA
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js').catch(() => {
-        // Service worker registration failed, app will still work
-      });
-    }
   }, []);
 
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/logs" element={<Logs />} />
-        <Route path="/logs/new" element={<NewLog />} />
-        <Route path="/logs/:id" element={<LogDetail />} />
-        <Route path="/stats" element={<Stats />} />
-        <Route path="/focus" element={<Focus />} />
-        <Route path="/notes" element={<Notes />} />
-        <Route path="/settings" element={<Settings />} />
+        <Route element={<AppShell />}>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/logs" element={<LogsPage />} />
+          <Route path="/logs/new" element={<NewLogPage />} />
+          <Route path="/logs/:id" element={<LogDetailPage />} />
+          <Route path="/stats" element={<StatsPage />} />
+          <Route path="/focus" element={<FocusPage />} />
+          <Route path="/focus/new" element={<FocusNewPage />} />
+          <Route path="/notes" element={<NotesPage />} />
+          <Route path="/notes/new" element={<NoteNewPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );
 }
-
-export default App;

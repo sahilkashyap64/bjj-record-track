@@ -1,80 +1,125 @@
-import { TrainingLog, GeneralNote, FocusJourney, AppSettings, TechniqueTag } from '../types';
+import type {
+  AppSettings,
+  FocusJourney,
+  GeneralNote,
+  InjuryEntry,
+  ResourceLink,
+  TechniqueTag,
+  TrainingLog,
+} from '@/types';
 
-// Helper to generate unique IDs
-export const generateId = (): string => {
-  return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-};
+export const createId = () =>
+  typeof crypto !== 'undefined' && 'randomUUID' in crypto
+    ? crypto.randomUUID()
+    : `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 
-// Default settings
+export const nowIso = () => new Date().toISOString();
+
 export const defaultSettings: AppSettings = {
+  id: 'singleton',
   displayName: 'BJJ Athlete',
   beltLevel: 'white',
   weeklyGoal: 3,
   annualTarget: 156,
   preferredRoundLength: 5,
-  theme: 'light',
+  theme: 'system',
 };
 
-// Preset techniques
-export const presetTechniques: TechniqueTag[] = [
-  // Submissions
-  { id: '1', name: 'Rear Naked Choke', category: 'submission' },
-  { id: '2', name: 'Arm Triangle', category: 'submission' },
-  { id: '3', name: 'Triangle Choke', category: 'submission' },
-  { id: '4', name: 'Armbar', category: 'submission' },
-  { id: '5', name: 'Kimura', category: 'submission' },
-  { id: '6', name: 'Omoplata', category: 'submission' },
-  { id: '7', name: 'Heel Hook', category: 'submission' },
-  { id: '8', name: 'Knee Reap', category: 'submission' },
-  { id: '9', name: 'Guillotine', category: 'submission' },
-  { id: '10', name: 'Darce Choke', category: 'submission' },
-
-  // Guard
-  { id: '11', name: 'Closed Guard', category: 'guard' },
-  { id: '12', name: 'Half Guard', category: 'guard' },
-  { id: '13', name: 'Open Guard', category: 'guard' },
-  { id: '14', name: 'De La Riva Guard', category: 'guard' },
-  { id: '15', name: 'Lasso Guard', category: 'guard' },
-  { id: '16', name: 'Spider Guard', category: 'guard' },
-  { id: '17', name: 'Butterfly Guard', category: 'guard' },
-  { id: '18', name: 'Rubber Guard', category: 'guard' },
-
-  // Pass
-  { id: '19', name: 'Knee Slice Pass', category: 'pass' },
-  { id: '20', name: 'Toreando Pass', category: 'pass' },
-  { id: '21', name: 'Pressure Pass', category: 'pass' },
-  { id: '22', name: 'Leglock Pass', category: 'pass' },
-  { id: '23', name: 'Smash Pass', category: 'pass' },
-
-  // Escape
-  { id: '24', name: 'Bridge Escape', category: 'escape' },
-  { id: '25', name: 'Side Control Escape', category: 'escape' },
-  { id: '26', name: 'Mount Escape', category: 'escape' },
-  { id: '27', name: 'Back Control Escape', category: 'escape' },
-
-  // Takedown
-  { id: '28', name: 'Single Leg', category: 'takedown' },
-  { id: '29', name: 'Double Leg', category: 'takedown' },
-  { id: '30', name: 'Hip Throw', category: 'takedown' },
-  { id: '31', name: 'Osoto Gari', category: 'takedown' },
-  { id: '32', name: 'Ankle Pick', category: 'takedown' },
-
-  // Sweep
-  { id: '33', name: 'Hip Bump Sweep', category: 'sweep' },
-  { id: '34', name: 'Scissor Sweep', category: 'sweep' },
-  { id: '35', name: 'De La Riva Sweep', category: 'sweep' },
-  { id: '36', name: 'Reversal', category: 'sweep' },
-  { id: '37', name: 'Berimbolo', category: 'sweep' },
+export const techniqueLibrary: TechniqueTag[] = [
+  { id: 'tech-rnc', name: 'Rear Naked Choke', category: 'submission' },
+  { id: 'tech-armbar', name: 'Armbar', category: 'submission' },
+  { id: 'tech-kimura', name: 'Kimura', category: 'submission' },
+  { id: 'tech-triangle', name: 'Triangle Choke', category: 'submission' },
+  { id: 'tech-closed-guard', name: 'Closed Guard', category: 'guard' },
+  { id: 'tech-half-guard', name: 'Half Guard', category: 'guard' },
+  { id: 'tech-butterfly', name: 'Butterfly Guard', category: 'guard' },
+  { id: 'tech-knee-slice', name: 'Knee Slice Pass', category: 'pass' },
+  { id: 'tech-toreando', name: 'Toreando Pass', category: 'pass' },
+  { id: 'tech-side-escape', name: 'Side Control Escape', category: 'escape' },
+  { id: 'tech-mount-escape', name: 'Mount Escape', category: 'escape' },
+  { id: 'tech-single-leg', name: 'Single Leg', category: 'takedown' },
+  { id: 'tech-double-leg', name: 'Double Leg', category: 'takedown' },
+  { id: 'tech-scissor', name: 'Scissor Sweep', category: 'sweep' },
+  { id: 'tech-hip-bump', name: 'Hip Bump Sweep', category: 'sweep' },
 ];
 
-// Preset injuries
-export const presetInjuries = [
+export const injuryPresets = [
   'Tweaked my knee',
   'Hurt my shoulder',
   'Stiff neck',
-  'Wrist pain',
-  'Elbow pain',
-  'Lower back strain',
-  'Hip flexor pain',
-  'Foot/ankle tweak',
+  'Lower back flare-up',
+  'Elbow soreness',
+  'Finger sprain',
 ];
+
+export const wentWellPrompts = ['I learned', 'I hit a', 'My defense on', 'My timing for'];
+export const improvementPrompts = ['Got caught in', 'Need to drill', 'Lost position when'];
+
+export const createEmptyResource = (): ResourceLink => ({
+  id: createId(),
+  title: '',
+  url: '',
+  platform: 'other',
+});
+
+export const createEmptyInjury = (presetLabel = ''): InjuryEntry => ({
+  id: createId(),
+  presetLabel,
+  description: '',
+  recoveryBreak: false,
+});
+
+export const createEmptyLog = (): TrainingLog => ({
+  id: createId(),
+  createdAt: nowIso(),
+  updatedAt: nowIso(),
+  sessionDate: new Date().toISOString().slice(0, 10),
+  sessionTime: '19:00',
+  mode: 'quick',
+  gi: true,
+  sessionType: 'regular_class',
+  durationMinutes: 60,
+  instructor: '',
+  schoolOrClub: '',
+  techniquesLearned: [],
+  totalRounds: 0,
+  totalRolls: 4,
+  roundLengthMinutes: 5,
+  restLengthMinutes: 1,
+  cardioRating: 3,
+  intensityRating: 3,
+  submissions: 0,
+  taps: 0,
+  escapes: 0,
+  sweeps: 0,
+  takedowns: 0,
+  guardPasses: 0,
+  wentWellPrompt: wentWellPrompts[0],
+  wentWellText: '',
+  improvementPrompt: improvementPrompts[0],
+  improvementText: '',
+  additionalNotes: '',
+  resources: [],
+  injuries: [],
+  tags: [],
+});
+
+export const createEmptyFocusJourney = (): FocusJourney => ({
+  id: createId(),
+  techniqueName: '',
+  durationDays: 30,
+  goalReps: 25,
+  resources: [],
+  gamePlanNotes: '',
+  createdAt: nowIso(),
+  status: 'active',
+});
+
+export const createEmptyNote = (): GeneralNote => ({
+  id: createId(),
+  title: '',
+  body: '',
+  createdAt: nowIso(),
+  updatedAt: nowIso(),
+  tags: [],
+});

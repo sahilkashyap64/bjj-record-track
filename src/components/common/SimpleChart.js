@@ -1,0 +1,6 @@
+import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+import { Card } from '@/components/common/Card';
+export function SimpleChart({ title, data, comparison = false }) {
+    const max = Math.max(...data.flatMap((point) => [point.value, point.secondaryValue ?? 0]), 1);
+    return (_jsxs(Card, { className: "space-y-4", children: [_jsx("div", { className: "text-sm font-semibold", children: title }), _jsx("div", { className: "space-y-3", children: data.length === 0 ? (_jsx("div", { className: "text-sm text-[var(--muted)]", children: "No data in this range." })) : (data.map((point) => (_jsxs("div", { className: "space-y-1", children: [_jsxs("div", { className: "flex items-center justify-between text-xs text-[var(--muted)]", children: [_jsx("span", { children: point.label }), _jsxs("span", { children: [point.value, comparison && point.secondaryValue !== undefined ? ` / ${point.secondaryValue}` : ''] })] }), _jsxs("div", { className: "flex gap-2", children: [_jsx("div", { className: "h-3 rounded-full bg-[var(--accent)]", style: { width: `${(point.value / max) * 100}%` } }), comparison && point.secondaryValue !== undefined ? (_jsx("div", { className: "h-3 rounded-full bg-[var(--highlight)]", style: { width: `${(point.secondaryValue / max) * 100}%` } })) : null] })] }, point.label)))) })] }));
+}

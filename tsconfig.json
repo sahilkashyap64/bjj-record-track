@@ -3,11 +3,13 @@
     "target": "ESNext",
     "module": "ESNext",
     "lib": ["DOM", "ESNext"],
+    "jsx": "react-jsx",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "Node",
+    "types": ["vite/client", "vite-plugin-pwa/client"],
     "baseUrl": "src",
     "paths": {
       "@/*": ["*"],

@@ -1,31 +1,25 @@
-import React from 'react';
-import { Button } from './Button';
+import { Button } from '@/components/common/Button';
 
 interface EmptyStateProps {
-  icon?: React.ReactNode;
   title: string;
   description: string;
   actionLabel?: string;
   onAction?: () => void;
 }
 
-export const EmptyState: React.FC<EmptyStateProps> = ({
-  icon,
-  title,
-  description,
-  actionLabel,
-  onAction,
-}) => {
+export function EmptyState({ title, description, actionLabel, onAction }: EmptyStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
-      {icon && <div className="mb-4 text-4xl opacity-50">{icon}</div>}
-      <h3 className="text-lg font-semibold text-gray-900 mb-2">{title}</h3>
-      <p className="text-sm text-gray-600 mb-6 max-w-sm">{description}</p>
-      {actionLabel && onAction && (
-        <Button onClick={onAction} variant="primary">
+    <div className="card-base flex flex-col items-start gap-3 rounded-[2rem] border-dashed">
+      <div className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--muted)]">Empty</div>
+      <div>
+        <h3 className="text-lg font-semibold">{title}</h3>
+        <p className="mt-1 text-sm text-[var(--muted)]">{description}</p>
+      </div>
+      {actionLabel && onAction ? (
+        <Button variant="outline" onClick={onAction}>
           {actionLabel}
         </Button>
-      )}
+      ) : null}
     </div>
   );
-};
+}

@@ -1,17 +1,17 @@
-import React from 'react';
+import type { HTMLAttributes, ReactNode } from 'react';
 
-interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
-  children: React.ReactNode;
+interface CardProps extends HTMLAttributes<HTMLDivElement> {
+  children: ReactNode;
   hoverable?: boolean;
 }
 
-export const Card: React.FC<CardProps> = ({ children, hoverable = false, className = '', ...props }) => {
+export function Card({ children, hoverable = false, className = '', ...props }: CardProps) {
   return (
     <div
-      className={`card-base ${hoverable ? 'hover:shadow-md transition-shadow cursor-pointer' : ''} ${className}`}
+      className={`card-base ${hoverable ? 'transition hover:-translate-y-0.5 hover:shadow-md' : ''} ${className}`}
       {...props}
     >
       {children}
     </div>
   );
-};
+}

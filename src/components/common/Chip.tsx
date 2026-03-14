@@ -1,44 +1,21 @@
-import React from 'react';
+import type { ButtonHTMLAttributes } from 'react';
 
-interface ChipProps extends React.HTMLAttributes<HTMLDivElement> {
-  label: string;
-  onRemove?: () => void;
-  variant?: 'filled' | 'outlined';
-  size?: 'sm' | 'md';
+interface ChipProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  active?: boolean;
 }
 
-export const Chip: React.FC<ChipProps> = ({
-  label,
-  onRemove,
-  variant = 'filled',
-  size = 'md',
-  className = '',
-  ...props
-}) => {
-  const baseStyles = 'inline-flex items-center gap-1 rounded-full font-medium transition-all';
-  
-  const variantStyles = {
-    filled: 'bg-blue-100 text-blue-700',
-    outlined: 'border border-gray-300 text-gray-700 bg-white',
-  };
-
-  const sizeStyles = {
-    sm: 'px-2 py-1 text-xs',
-    md: 'px-3 py-1 text-sm',
-  };
-
+export function Chip({ active = false, className = '', children, ...props }: ChipProps) {
   return (
-    <div className={`${baseStyles} ${variantStyles[variant]} ${sizeStyles[size]} ${className}`} {...props}>
-      <span>{label}</span>
-      {onRemove && (
-        <button
-          onClick={onRemove}
-          className="ml-1 font-bold hover:opacity-70"
-          aria-label={`Remove ${label}`}
-        >
-          ×
-        </button>
-      )}
-    </div>
+    <button
+      type="button"
+      className={`rounded-full px-3 py-2 text-sm font-medium transition ${
+        active
+          ? 'bg-[var(--accent)] text-white'
+          : 'border border-[var(--line)] bg-white/70 text-slate-700 hover:bg-white'
+      } ${className}`}
+      {...props}
+    >
+      {children}
+    </button>
   );
-};
+}
