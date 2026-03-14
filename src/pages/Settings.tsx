@@ -1,13 +1,16 @@
-import { useRef } from 'react';
+import { useState, useRef } from 'react';
 import { Button } from '@/components/common/Button';
 import { Card } from '@/components/common/Card';
 import type { ExportPayload } from '@/types';
 import { clearAllData, exportAllData, importAllData } from '@/db/repository';
 import { useSettings } from '@/hooks/useSettings';
+import { buildShareUrl } from '@/utils/shareTransfer';
 
 export default function SettingsPage() {
   const { settings, save } = useSettings();
   const fileRef = useRef<HTMLInputElement | null>(null);
+  const [shareUrl, setShareUrl] = useState('');
+  const [shareError, setShareError] = useState('');
 
   const downloadBackup = async () => {
     const payload = await exportAllData();
@@ -18,6 +21,21 @@ export default function SettingsPage() {
     anchor.download = `mat-log-backup-${new Date().toISOString().slice(0, 10)}.json`;
     anchor.click();
     URL.revokeObjectURL(url);
+  };
+
+  const generateShareLink = async () => {
+    try {
+      setShareError('');
+      const payload = await exportAllData();
+      const url = await buildShareUrl(payload);
+      setShareUrl(url);
+      if (navigator.clipboard) {
+        await navigator.clipboard.writeText(url);
+      }
+    } catch (error) {
+      console.error(error);
+      setShareError(error instanceof Error ? error.message : 'Could not generate share link.');
+    }
   };
 
   return (
@@ -92,6 +110,39 @@ export default function SettingsPage() {
             window.location.reload();
           }}
         />
+      </Card>
+      <Card className="space-y-3">
+        <div className="text-sm font-semibold">Transfer by Link</div>
+        <p className="text-sm text-[var(--muted)]">
+          Create a compressed shareable link for moving your journal to a new phone. Opening the link will prompt to
+          overwrite the local data on that device.
+        </p>
+        <div className="flex flex-wrap gap-2">
+          <Button variant="outline" onClick={generateShareLink}>
+            Generate share link
+          </Button>
+          {shareUrl ? (
+            <Button
+              variant="ghost"
+              onClick={async () => {
+                if (navigator.clipboard) {
+                  await navigator.clipboard.writeText(shareUrl);
+                }
+              }}
+            >
+              Copy link
+            </Button>
+          ) : null}
+        </div>
+        {shareError ? <div className="text-sm text-rose-700">{shareError}</div> : null}
+        {shareUrl ? (
+          <div className="space-y-2">
+            <div className="rounded-2xl border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900">
+              Warning: importing from this link overwrites existing local data on the destination device.
+            </div>
+            <textarea className="input-base min-h-28" readOnly value={shareUrl} />
+          </div>
+        ) : null}
       </Card>
       <Card className="space-y-3 border-rose-200 bg-rose-50/70">
         <div className="text-sm font-semibold text-rose-800">Start Anew</div>

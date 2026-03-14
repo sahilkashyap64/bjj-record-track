@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { seedDatabase } from '@/db/seedData';
+import { importAllData } from '@/db/repository';
 import { AppShell } from '@/components/layout/AppShell';
 import HomePage from '@/pages/Home';
 import LogsPage from '@/pages/Logs';
@@ -12,10 +13,39 @@ import FocusNewPage from '@/pages/FocusNew';
 import NotesPage from '@/pages/Notes';
 import NoteNewPage from '@/pages/NoteNew';
 import SettingsPage from '@/pages/Settings';
+import {
+  clearSharePayloadFromLocation,
+  parseSharePayload,
+  readSharePayloadFromLocation,
+} from '@/utils/shareTransfer';
 
 export default function App() {
   useEffect(() => {
-    seedDatabase().catch(console.error);
+    const bootstrap = async () => {
+      const sharedPayload = readSharePayloadFromLocation();
+
+      if (sharedPayload) {
+        try {
+          const backup = await parseSharePayload(sharedPayload);
+          const shouldImport = window.confirm(
+            'This link contains backup data and will overwrite all existing local data on this device. Continue?',
+          );
+
+          if (shouldImport) {
+            await importAllData(backup);
+          }
+        } catch (error) {
+          console.error(error);
+          window.alert('The shared backup link could not be imported.');
+        } finally {
+          clearSharePayloadFromLocation();
+        }
+      }
+
+      await seedDatabase();
+    };
+
+    bootstrap().catch(console.error);
   }, []);
 
   return (
