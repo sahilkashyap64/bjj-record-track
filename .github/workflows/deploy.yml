@@ -10,7 +10,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: "pages"
+  group: "gh-pages-deploy"
   cancel-in-progress: true
 
 jobs:
@@ -48,4 +48,4 @@ jobs:
           folder: dist
           clean-exclude: pr-preview
           single-commit: true
-          force: false
+          force: true
