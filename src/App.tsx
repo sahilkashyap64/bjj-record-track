@@ -20,6 +20,8 @@ import {
 } from '@/utils/shareTransfer';
 
 export default function App() {
+  const routerBase = import.meta.env.BASE_URL.replace(/\/$/, '') || '/';
+
   useEffect(() => {
     const bootstrap = async () => {
       const sharedPayload = readSharePayloadFromLocation();
@@ -49,7 +51,7 @@ export default function App() {
   }, []);
 
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={routerBase === '/' ? undefined : routerBase}>
       <Routes>
         <Route element={<AppShell />}>
           <Route path="/" element={<HomePage />} />
