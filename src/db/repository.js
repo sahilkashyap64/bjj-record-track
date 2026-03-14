@@ -1,5 +1,6 @@
 import { db } from '@/db/db';
 import { createId, defaultSettings, nowIso, } from '@/db/schema';
+import { disableSeeding, markSeedCompleted } from '@/db/seedData';
 export const listLogs = () => db.logs.orderBy('sessionDate').reverse().toArray();
 export const getLogById = (id) => db.logs.get(id);
 export const createLog = async (log) => {
@@ -78,6 +79,7 @@ export const importAllData = async (payload) => {
         await db.focusJourneys.bulkPut(payload.focusJourneys);
         await db.settings.put(payload.settings);
     });
+    markSeedCompleted();
 };
 export const clearAllData = async () => {
     await db.transaction('rw', db.logs, db.notes, db.focusJourneys, db.settings, async () => {
@@ -87,4 +89,5 @@ export const clearAllData = async () => {
         await db.settings.clear();
         await db.settings.put(defaultSettings);
     });
+    disableSeeding();
 };

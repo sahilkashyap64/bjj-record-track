@@ -93,6 +93,23 @@ export default function SettingsPage() {
           }}
         />
       </Card>
+      <Card className="space-y-3 border-rose-200 bg-rose-50/70">
+        <div className="text-sm font-semibold text-rose-800">Start Anew</div>
+        <p className="text-sm text-rose-700">
+          Remove all logs, notes, focus journeys, and local stats so the app opens as a blank journal.
+        </p>
+        <Button
+          variant="danger"
+          onClick={async () => {
+            if (window.confirm('Delete all existing data and start with a blank journal?')) {
+              await clearAllData();
+              window.location.reload();
+            }
+          }}
+        >
+          Delete everything
+        </Button>
+      </Card>
     </div>
   );
 }

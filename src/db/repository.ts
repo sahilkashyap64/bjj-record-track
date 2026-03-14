@@ -4,6 +4,7 @@ import {
   defaultSettings,
   nowIso,
 } from '@/db/schema';
+import { disableSeeding, markSeedCompleted } from '@/db/seedData';
 import type {
   AppSettings,
   ExportPayload,
@@ -96,6 +97,7 @@ export const importAllData = async (payload: ExportPayload) => {
     await db.focusJourneys.bulkPut(payload.focusJourneys);
     await db.settings.put(payload.settings);
   });
+  markSeedCompleted();
 };
 
 export const clearAllData = async () => {
@@ -106,4 +108,5 @@ export const clearAllData = async () => {
     await db.settings.clear();
     await db.settings.put(defaultSettings);
   });
+  disableSeeding();
 };

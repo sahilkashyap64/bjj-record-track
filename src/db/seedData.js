@@ -1,5 +1,26 @@
 import { db } from '@/db/db';
 import { createId, defaultSettings, nowIso, techniqueLibrary, } from '@/db/schema';
+const SEED_STATUS_KEY = 'mat-log-seed-status';
+const getSeedStatus = () => {
+    if (typeof window === 'undefined')
+        return 'pending';
+    return window.localStorage.getItem(SEED_STATUS_KEY) ?? 'pending';
+};
+export const markSeedCompleted = () => {
+    if (typeof window === 'undefined')
+        return;
+    window.localStorage.setItem(SEED_STATUS_KEY, 'completed');
+};
+export const disableSeeding = () => {
+    if (typeof window === 'undefined')
+        return;
+    window.localStorage.setItem(SEED_STATUS_KEY, 'disabled');
+};
+export const enableSeeding = () => {
+    if (typeof window === 'undefined')
+        return;
+    window.localStorage.setItem(SEED_STATUS_KEY, 'pending');
+};
 const daysAgo = (days) => {
     const date = new Date();
     date.setDate(date.getDate() - days);
@@ -85,7 +106,11 @@ const sampleFocusJourneys = [
     },
 ];
 export const seedDatabase = async () => {
+    if (getSeedStatus() !== 'pending') {
+        return;
+    }
     if ((await db.logs.count()) > 0) {
+        markSeedCompleted();
         return;
     }
     await db.transaction('rw', db.logs, db.notes, db.focusJourneys, db.settings, async () => {
@@ -94,4 +119,5 @@ export const seedDatabase = async () => {
         await db.notes.bulkPut(sampleNotes);
         await db.focusJourneys.bulkPut(sampleFocusJourneys);
     });
+    markSeedCompleted();
 };

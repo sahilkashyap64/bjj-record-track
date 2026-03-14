@@ -7,6 +7,29 @@ import {
 } from '@/db/schema';
 import type { FocusJourney, GeneralNote, TrainingLog } from '@/types';
 
+const SEED_STATUS_KEY = 'mat-log-seed-status';
+type SeedStatus = 'pending' | 'completed' | 'disabled';
+
+const getSeedStatus = (): SeedStatus => {
+  if (typeof window === 'undefined') return 'pending';
+  return (window.localStorage.getItem(SEED_STATUS_KEY) as SeedStatus | null) ?? 'pending';
+};
+
+export const markSeedCompleted = () => {
+  if (typeof window === 'undefined') return;
+  window.localStorage.setItem(SEED_STATUS_KEY, 'completed');
+};
+
+export const disableSeeding = () => {
+  if (typeof window === 'undefined') return;
+  window.localStorage.setItem(SEED_STATUS_KEY, 'disabled');
+};
+
+export const enableSeeding = () => {
+  if (typeof window === 'undefined') return;
+  window.localStorage.setItem(SEED_STATUS_KEY, 'pending');
+};
+
 const daysAgo = (days: number) => {
   const date = new Date();
   date.setDate(date.getDate() - days);
@@ -97,7 +120,12 @@ const sampleFocusJourneys: FocusJourney[] = [
 ];
 
 export const seedDatabase = async () => {
+  if (getSeedStatus() !== 'pending') {
+    return;
+  }
+
   if ((await db.logs.count()) > 0) {
+    markSeedCompleted();
     return;
   }
 
@@ -107,4 +135,6 @@ export const seedDatabase = async () => {
     await db.notes.bulkPut(sampleNotes);
     await db.focusJourneys.bulkPut(sampleFocusJourneys);
   });
+
+  markSeedCompleted();
 };
