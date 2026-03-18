@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { seedDatabase } from '@/db/seedData';
 import { importAllData } from '@/db/repository';
 import { AppShell } from '@/components/layout/AppShell';
@@ -13,6 +13,7 @@ import FocusNewPage from '@/pages/FocusNew';
 import NotesPage from '@/pages/Notes';
 import NoteNewPage from '@/pages/NoteNew';
 import SettingsPage from '@/pages/Settings';
+import NotFoundPage from '@/pages/NotFound';
 import {
   clearSharePayloadFromLocation,
   parseSharePayload,
@@ -64,7 +65,7 @@ export default function App() {
           <Route path="/notes" element={<NotesPage />} />
           <Route path="/notes/new" element={<NoteNewPage />} />
           <Route path="/settings" element={<SettingsPage />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

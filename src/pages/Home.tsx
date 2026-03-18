@@ -20,20 +20,20 @@ export default function HomePage() {
   const level = Math.floor(logs.length / 10) + 1;
 
   return (
-    <div className="space-y-5">
-      <Card className="overflow-hidden bg-[linear-gradient(135deg,rgba(19,111,99,0.96),rgba(9,61,54,0.96))] text-white">
+    <div className="space-y-6">
+      <Card className="overflow-hidden bg-[radial-gradient(circle_at_top_right,rgba(132,166,202,0.36),transparent_44%),linear-gradient(130deg,rgba(28,52,78,0.96),rgba(22,41,62,0.96))] px-5 py-6 text-white md:px-7">
         <div className="space-y-3">
-          <div className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-100">Dashboard</div>
+          <div className="text-xs font-medium italic tracking-[0.1em] text-blue-100">daily snapshot</div>
           <div className="flex items-end justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-bold">Welcome back, {settings.displayName}</h1>
-              <p className="mt-2 max-w-xl text-sm text-emerald-50/90">
+              <h1 className="text-4xl font-extrabold tracking-[-0.03em]">Welcome back, {settings.displayName}</h1>
+              <p className="mt-2 max-w-xl text-sm text-blue-50/90">
                 Weekly goal {settings.weeklyGoal} sessions. Current streak {snapshot.currentStreak} weeks.
               </p>
             </div>
             <Link
               to="/logs/new"
-              className="rounded-full bg-white px-4 py-3 text-sm font-semibold text-[var(--accent)]"
+              className="rounded-xl bg-white px-4 py-3 text-sm font-semibold text-[var(--accent)] transition hover:-translate-y-0.5"
             >
               New Log
             </Link>
@@ -48,8 +48,8 @@ export default function HomePage() {
         <StatCard label="Sub/Tap Ratio" value={formatRatio(snapshot.summary.subTapRatio)} helper={`${snapshot.summary.submissions} subs / ${snapshot.summary.taps} taps`} />
       </div>
 
-      <div className="grid gap-3 md:grid-cols-3">
-        <Card className="space-y-3">
+      <div className="grid gap-3 md:grid-cols-[1.2fr_0.8fr]">
+        <Card className="space-y-3 md:row-span-2">
           <div className="text-sm font-semibold">Goal Progress</div>
           <div className="space-y-3">
             <div>
@@ -58,14 +58,14 @@ export default function HomePage() {
             </div>
             <div>
               <div className="mb-1 flex justify-between text-sm"><span>Annual</span><span>{formatPercent(snapshot.annualProgress)}</span></div>
-              <div className="h-3 rounded-full bg-slate-200"><div className="h-3 rounded-full bg-[var(--highlight)]" style={{ width: `${Math.min(100, snapshot.annualProgress)}%` }} /></div>
+              <div className="h-3 rounded-full bg-slate-200"><div className="h-3 rounded-full bg-[#6f90b1]" style={{ width: `${Math.min(100, snapshot.annualProgress)}%` }} /></div>
             </div>
           </div>
         </Card>
         <Card className="space-y-2">
           <div className="text-sm font-semibold">Progression</div>
           <div className="text-4xl font-black text-[var(--accent)]">Lv {level}</div>
-          <p className="text-sm text-[var(--muted)]">Generic progression based on sessions logged. Next level in {Math.max(0, level * 10 - logs.length)} sessions.</p>
+          <p className="text-sm text-[var(--muted)]">Session-based rank estimate. Next level in {Math.max(0, level * 10 - logs.length)} sessions.</p>
         </Card>
         <Card className="space-y-2">
           <div className="text-sm font-semibold">Style Split</div>

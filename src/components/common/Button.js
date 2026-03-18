@@ -1,8 +1,8 @@
 import { jsx as _jsx } from "react/jsx-runtime";
 import React from 'react';
 const variantStyles = {
-    primary: 'bg-[var(--accent)] text-white hover:opacity-90',
-    secondary: 'bg-[var(--highlight)] text-slate-900 hover:opacity-90',
+    primary: 'bg-[var(--accent)] text-white hover:bg-[#274f78]',
+    secondary: 'bg-[var(--accent-soft)] text-[var(--accent)] hover:bg-[#cfe0f2]',
     outline: 'border border-[var(--line)] bg-white/70 text-slate-800 hover:bg-white',
     ghost: 'bg-transparent text-slate-700 hover:bg-white/60',
     danger: 'bg-rose-600 text-white hover:bg-rose-700',
