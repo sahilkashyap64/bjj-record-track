@@ -10,9 +10,9 @@ interface EmptyStateProps {
 export function EmptyState({ title, description, actionLabel, onAction }: EmptyStateProps) {
   return (
     <div className="card-base flex flex-col items-start gap-3 rounded-[2rem] border-dashed">
-      <div className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--muted)]">Empty</div>
+      <div className="text-xs font-medium italic tracking-[0.08em] text-[var(--muted)]">Nothing here yet</div>
       <div>
-        <h3 className="text-lg font-semibold">{title}</h3>
+        <h3 className="text-lg font-semibold tracking-[-0.01em]">{title}</h3>
         <p className="mt-1 text-sm text-[var(--muted)]">{description}</p>
       </div>
       {actionLabel && onAction ? (
