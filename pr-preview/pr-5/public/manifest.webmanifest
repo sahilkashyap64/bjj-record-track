@@ -1,0 +1,17 @@
+{
+  "name": "Mat Log",
+  "short_name": "Mat Log",
+  "description": "Local-first BJJ training journal and progress tracker.",
+  "display": "standalone",
+  "start_url": "/",
+  "theme_color": "#136f63",
+  "background_color": "#f4f1e8",
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
